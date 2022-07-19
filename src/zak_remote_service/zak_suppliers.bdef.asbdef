@@ -1,0 +1,7 @@
+ implementation abstract;
+ define behavior for ZAK_SUPPLIERS
+  {
+  create;
+ update;
+ delete;
+ }

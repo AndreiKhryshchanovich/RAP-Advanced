@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service definition for Supplier CE'
+define service ZAK_SC_SUPPLIER {
+  expose ZAK_SUPPLIER_C as Suppliers;
+}

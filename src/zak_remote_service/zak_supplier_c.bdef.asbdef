@@ -1,0 +1,12 @@
+unmanaged implementation in class zbp_ak_supplier_c unique;
+//strict; //Comment this line in to enable strict mode. The strict mode is prerequisite to be future proof regarding syntax and to be able to release your BO.
+
+define behavior for ZAK_SUPPLIER_C alias Supplier_C
+lock master
+etag master LastChangedAt
+{
+  update;
+
+  field ( readonly ) SupplierID, CompanyName, ContactName, ContactTitle, Country, City, Address, Region, PostalCode, Phone, Fax, HomePage, LastChangedAt;
+  field ( mandatory ) Discount_pct;
+}

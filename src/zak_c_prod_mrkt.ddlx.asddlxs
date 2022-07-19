@@ -1,0 +1,133 @@
+@Metadata.layer: #CORE
+@UI: {
+    headerInfo:           { 
+                            imageUrl: 'CountryImageUrl',
+                            typeName:       'Market',
+                            title: { label: 'Market' } },
+    presentationVariant: [{ sortOrder:      [{ by: 'Mrktid' }, 
+                                             { by: 'Status' }] }],
+    chart:               [{ qualifier: 'ChartQuantity',
+                            chartType: #DONUT,
+                            dimensions: [ 'Mrktid'],
+                            measures: [ 'TotalQuantity'],
+                            measureAttributes: [ {measure: 'TotalQuantity', role: #AXIS_1} ],
+                            dimensionAttributes: [ {dimension: 'Mrktid', role: #SERIES} ],
+                            description: 'Chart shows quantity by delivery date.' },
+                          { qualifier: 'ChartAmount',
+                            chartType: #BAR_DUAL,
+                            dimensions: [ 'Mrktid'],
+                            measures: [ 'TotalGrossAmount', 'TotalNetAmount' ],
+                            measureAttributes: [ {measure: 'TotalNetAmount', role: #AXIS_1},
+                                                 {measure: 'TotalGrossAmount', role: #AXIS_2} ],
+                            dimensionAttributes: [ {dimension: 'Mrktid', role: #SERIES} ],
+                            description: 'Chart shows net and gross amount by delivery date.' } ]                                                                                  
+     }
+annotate view ZAK_C_PROD_MRKT
+    with 
+{
+    @UI.facet: [ { id:            'MarketHeaderEndDate',
+                 purpose:         #HEADER,
+                 type:            #DATAPOINT_REFERENCE,
+                 position:        10,
+                 targetQualifier: 'EndDate' },
+               { id:              'MarketHeaderCountry',
+                 purpose:         #HEADER,
+                 type:            #DATAPOINT_REFERENCE,
+                 position:        20,
+                 targetQualifier: 'Country' },
+               { id:              'MarketHeaderStartDate',
+                 purpose:         #HEADER,
+                 type:            #DATAPOINT_REFERENCE,
+                 position:        30,
+                 targetQualifier: 'StartDate' },
+               { id:              'GeneralInfo',
+                 label:           'General Information',
+                 type:            #COLLECTION,
+                 position:        10 },
+               { id:              'AdminData',
+                 label:           'Admin Data',
+                 type:            #COLLECTION,
+                 position:        20 },
+               { id:              'BasicGroup',
+                 label:           'Basic Data',
+                 purpose:         #STANDARD,
+                 type:            #FIELDGROUP_REFERENCE,
+                 parentId:        'GeneralInfo',
+                 position:        10,
+                 targetQualifier: 'BasicGroup'},
+               { id:              'CreateGroup',
+                 label:           'Create Info',
+                 purpose:         #STANDARD,
+                 type:            #FIELDGROUP_REFERENCE,
+                 parentId:        'AdminData',
+                 position:        10,
+                 targetQualifier: 'CreateGroup' },
+               { id:              'ChangeGroup',
+                 label:           'Change Info',
+                 purpose:         #STANDARD,
+                 type:            #FIELDGROUP_REFERENCE,
+                 parentId:        'AdminData',
+                 position:        20,
+                 targetQualifier: 'ChangeGroup' },   
+               { id:              'Order',
+                 label:           'Orders',
+                 purpose:         #STANDARD,
+                 type:            #LINEITEM_REFERENCE,
+                 position:        30,
+                 targetElement:   '_Order' }, 
+               { id:              'ChartQuantity',
+                 label:           'Order Quantity',
+                 purpose:         #STANDARD,
+                 type:            #CHART_REFERENCE,
+                 position:        40,
+                 targetElement:   '_OrderChart',
+                 targetQualifier: 'ChartQuantity' },
+               { id:              'ChartAmount',
+                 label:           'Order Amount',
+                 purpose:         #STANDARD,
+                 type:            #CHART_REFERENCE,
+                 position:        50,
+                 targetElement:   '_OrderChart',
+                 targetQualifier: 'ChartAmount' }    
+              ]
+    
+    @UI.hidden: true
+    ProdUuid;
+    @UI.hidden: true
+    MrktUuid;
+    @UI: { lineItem:       [{ position: 10 }],
+           fieldGroup:     [{ position: 10, qualifier: 'BasicGroup' }],
+           dataPoint:       { qualifier: 'Country', title: 'Country' } }
+    Mrktid;
+    @UI: { lineItem:       [{ position: 20 }],
+           fieldGroup:     [{ position: 20, qualifier: 'BasicGroup' }],
+           dataPoint:       { qualifier: 'Country', title: 'Country' } }
+    IsoCode;
+    @UI: { lineItem:       [{ position: 30, value: 'Status', criticality: 'StatusCriticality' }],
+           fieldGroup:     [{ position: 30, qualifier: 'BasicGroup', criticality: 'StatusCriticality' }],
+           identification : [{ type: #FOR_ACTION,  dataAction: 'confirm' , label: 'Confirm' }] }
+    Status;
+    @UI: { lineItem:       [{ position: 40 }],
+           fieldGroup:     [{ position: 40, qualifier: 'BasicGroup' }],
+           dataPoint:       { qualifier: 'StartDate', title: 'Start Date' } }
+    Startdate;
+    @UI: { lineItem:       [{ position: 50 }],
+           fieldGroup:     [{ position: 50, qualifier: 'BasicGroup' }],
+           dataPoint:       { qualifier: 'EndDate', title: 'End Date' } }    
+    Enddate;
+    @UI: { lineItem:       [{ position: 60 }] }    
+    TotalQuantity;
+    @UI: { lineItem:       [{ position: 70 }] }    
+    TotalNetAmount;
+    @UI: { lineItem:       [{ position: 80 }] }    
+    TotalGrossAmount;    
+    @UI: { fieldGroup:     [{ position: 10, qualifier: 'CreateGroup' }] }
+    CreatedBy;
+    @UI: { fieldGroup:     [{ position: 20, qualifier: 'CreateGroup' }] }
+    CreationTime;
+    @UI: { fieldGroup:     [{ position: 10, qualifier: 'ChangeGroup' }] }
+    ChangedBy;
+    @UI: { fieldGroup:     [{ position: 20, qualifier: 'ChangeGroup' }] }
+    ChangeTime;
+    
+}

@@ -1,0 +1,5 @@
+@EndUserText.label: 'ZAK_SC_SUPPLIERS'
+@OData.schema.name: 'ODataWebExperimental.Northwind.Model'
+define service ZAK_SC_SUPPLIERS {
+ expose ZAK_SUPPLIERS; 
+ } 

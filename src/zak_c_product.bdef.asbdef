@@ -1,0 +1,45 @@
+projection;
+use draft;
+
+define behavior for ZAK_C_PRODUCT alias Product
+//use etag
+{
+  use create;
+  use update;
+  use delete;
+
+  use action make_copy;
+  use action move_to_new_phase;
+  use action get_pgname_transl;
+
+  use association _Market { create; with draft; }
+
+  field ( readonly ) PhaseId;
+
+}
+
+define behavior for ZAK_C_PROD_MRKT alias Market
+//use etag
+{
+  use update;
+  use delete;
+
+  use action confirm;
+
+  use association _Product { with draft; }
+  use association _Order { create; with draft; }
+
+  field ( readonly ) Status;
+}
+
+define behavior for ZAK_C_MRKT_ORDER alias Order
+//use etag
+{
+  use update;
+  use delete;
+
+  use association _Product { with draft; }
+  use association _Market { with draft; }
+
+  field ( readonly ) Orderid, Amountcurr, Netamount, Grossamount, CalendarYear;
+}

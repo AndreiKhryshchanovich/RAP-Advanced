@@ -1,0 +1,151 @@
+@Metadata.layer: #CORE
+@UI: {
+    headerInfo:           { imageUrl: 'ProdGroupImageUrl',
+                            typeName:       'Kitchen Appliance',
+                            typeNamePlural: 'Kitchen Appliances',
+                            title: { label: 'Kitchen Appliance' } },
+    presentationVariant: [{ sortOrder:      [{ by: 'ProdId' }, 
+                                             { by: 'PgId' }] }]
+     }
+annotate view ZAK_C_PRODUCT
+    with 
+{   
+    @UI.facet: [ 
+                { id:            'ProductHeaderPrice',
+                 purpose:         #HEADER,
+                 type:            #DATAPOINT_REFERENCE,
+                 position:        10,
+                 targetQualifier: 'Price' },
+               { id:              'ProductHeaderProductId',
+                 purpose:         #HEADER,
+                 type:            #DATAPOINT_REFERENCE,
+                 position:        20,
+                 targetQualifier: 'ProductId' },
+               { id:              'ProductHeaderTaxRate',
+                 purpose:         #HEADER,
+                 type:            #DATAPOINT_REFERENCE,
+                 position:        30,
+                 targetQualifier: 'TaxRate' },
+               { id:              'GeneralInfo',
+                 label:           'General Information',
+                 type:            #COLLECTION,
+                 position:        10 },
+               { id:              'AdminData',
+                 label:           'Admin Data',
+                 type:            #COLLECTION,
+                 position:        20 },
+               { id:              'BasicGroup',
+                 label:           'Basic Data',
+                 purpose:         #STANDARD,
+                 type:            #FIELDGROUP_REFERENCE,
+                 parentId:        'GeneralInfo',
+                 position:        10,
+                 targetQualifier: 'BasicGroup'},
+               { id:              'SizeGroup',
+                 label:           'Size Dimensions',
+                 purpose:         #STANDARD,
+                 type:            #FIELDGROUP_REFERENCE,
+                 parentId:        'GeneralInfo',
+                 position:        20,
+                 targetQualifier: 'SizeGroup' },
+               { id:              'PriceGroup',
+                 label:           'Price Details',
+                 purpose:         #STANDARD,
+                 type:            #FIELDGROUP_REFERENCE,
+                 parentId:        'GeneralInfo',
+                 position:        30,
+                 targetQualifier: 'PriceGroup' },
+               { id:              'CreateGroup',
+                 label:           'Create Info',
+                 purpose:         #STANDARD,
+                 type:            #FIELDGROUP_REFERENCE,
+                 parentId:        'AdminData',
+                 position:        10,
+                 targetQualifier: 'CreateGroup' },
+               { id:              'ChangeGroup',
+                 label:           'Change Info',
+                 purpose:         #STANDARD,
+                 type:            #FIELDGROUP_REFERENCE,
+                 parentId:        'AdminData',
+                 position:        20,
+                 targetQualifier: 'ChangeGroup' },   
+               { id:              'Market',
+                 label:           'Markets',
+                 purpose:         #STANDARD,
+                 type:            #LINEITEM_REFERENCE,
+                 position:        30,
+                 targetElement:   '_Market' },
+               { id:              'ChartQuantity',
+                 label:           'Market Quantity',
+                 purpose:         #STANDARD,
+                 type:            #CHART_REFERENCE,
+                 position:        40,
+                 targetElement:   '_Market',
+                 targetQualifier: 'ChartQuantity' },
+               { id:              'ChartAmount',
+                 label:           'Market Amount',
+                 purpose:         #STANDARD,
+                 type:            #CHART_REFERENCE,
+                 position:        50,
+                 targetElement:   '_Market',
+                 targetQualifier: 'ChartAmount' }  
+              ]
+
+    @UI.hidden: true
+    ProdUuid;
+    @UI: { lineItem:       [{ position: 10, importance: #HIGH }, 
+                            { type: #FOR_ACTION, dataAction: 'make_copy', label: 'Copy' }],                 
+           fieldGroup:     [{ position: 10, qualifier: 'BasicGroup' }],
+           dataPoint:       { qualifier: 'ProductId', title: 'Product ID' },
+           selectionField: [{ position: 10 }] }
+    ProdId;
+    @UI: { lineItem:       [{ position: 20, importance: #HIGH }],
+           fieldGroup:     [{ position: 20, qualifier: 'BasicGroup' }],
+           selectionField: [{ position: 30 }] }
+    PgId;
+    @UI: { fieldGroup:     [{ position: 30, qualifier: 'BasicGroup' }] }
+    PgNameTrans;
+    @UI: { fieldGroup:     [{ position: 40, qualifier: 'BasicGroup' }] }
+    TransCode;
+    @UI: { lineItem:       [{ position: 30, criticality: 'PhaseCriticality', importance: #HIGH }],
+           fieldGroup:     [{ position: 50, qualifier: 'BasicGroup', criticality: 'PhaseCriticality' }],
+           identification : [{ type: #FOR_ACTION,  dataAction: 'move_to_new_phase' , label: 'Move', importance: #HIGH },
+                             { type: #FOR_ACTION,  dataAction: 'make_copy' , label: 'Copy', importance: #HIGH },
+                             { type: #FOR_ACTION,  dataAction: 'get_pgname_transl' , label: 'Translate', importance: #HIGH } ],
+           selectionField: [{ position: 20 }] }
+    PhaseId;
+    @UI: { fieldGroup:     [{ position: 10, qualifier: 'SizeGroup' }] }
+    Depth;
+    @UI: { fieldGroup:     [{ position: 20, qualifier: 'SizeGroup' }] }
+    Height;
+    @UI: { fieldGroup:     [{ position: 30, qualifier: 'SizeGroup' }] }
+    Width;
+    @Consumption.valueHelpDefinition: [{entity: {name: 'ZAK_I_UOM', element: 'Msehi' }}]
+    SizeUom;
+    @UI: { lineItem:       [{ position: 40, importance: #HIGH }] }
+    SizeDimensions;
+    @UI: { lineItem:       [{ position: 50, importance: #HIGH }],
+           fieldGroup:     [{ position: 10, qualifier: 'PriceGroup' }],
+           dataPoint:       { qualifier: 'Price', title: 'Net Price' },
+           selectionField: [{ position: 40 }] }
+    Price;
+    @Consumption.valueHelpDefinition: [{entity: {name: 'ZAK_I_Currency', element: 'Currency' }}]
+    PriceCurrency;
+    @UI: { lineItem:       [{ position: 60, importance: #HIGH }],
+           dataPoint:       { qualifier: 'TaxRate', title: 'Tax Rate' },
+           fieldGroup:     [{ position: 20, qualifier: 'PriceGroup' }] }
+    Taxrate;
+    @UI: { fieldGroup:     [{ position: 10, qualifier: 'CreateGroup' }] }
+    CreatedBy;
+    @UI: { fieldGroup:     [{ position: 20, qualifier: 'CreateGroup' }] }
+    CreationTime;
+    @UI: { fieldGroup:     [{ position: 10, qualifier: 'ChangeGroup' }] }
+    ChangedBy;
+    @UI: { fieldGroup:     [{ position: 20, qualifier: 'ChangeGroup' }] }
+    ChangeTime;
+    @UI.hidden: true
+    PhaseCriticality;
+    @UI.hidden: true
+    PhaseName;
+    
+}

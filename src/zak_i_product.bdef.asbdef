@@ -1,0 +1,153 @@
+managed;
+with draft;
+
+define behavior for ZAK_I_PRODUCT alias Product
+implementation in class zak_cl_bp_i_product unique
+persistent table zak_d_product
+draft table zak_d_product_d
+lock master total etag ChangeTime
+etag master ChangeTime
+
+{
+  create;
+  update;
+  delete;
+
+  association _Market { create; with draft; }
+
+  field ( readonly, numbering : managed ) ProdUuid;
+  field ( readonly ) PgNameTrans, ChangeTime, ChangedBy, CreationTime, CreatedBy;
+  field ( features : instance ) Prodid,  PgId, Height, Width, Depth, SizeUom, Price, PriceCurrency, Taxrate;
+
+
+  action make_copy parameter ZAK_A_COPY result [1] $self;
+  action ( features : instance ) move_to_new_phase result [1] $self;
+  action get_pgname_transl;
+
+  validation validate_pg on save { create; field PgId; }
+  validation validate_prodid on save { create; field ProdId; }
+
+  determination set_first_phase on modify { create; field Price; }
+  determination set_pgname_translation on save { create; field TransCode; }
+
+  draft determine action Prepare
+  {
+    validation validate_pg;
+    validation validate_prodid;
+    validation Market ~ validate_market;
+    validation Market ~ validate_start_date;
+    validation Market ~ validate_end_date;
+    validation Market ~ check_duplicates;
+    validation Order ~ validate_delivery_date;
+    validation Order ~ validate_business_partner;
+  }
+
+  mapping for zak_d_product
+  {
+    ProdUuid = prod_uuid;
+    ProdId = prodid;
+    PgId = pgid;
+    PhaseId = phaseid;
+    Depth = depth;
+    Height = height;
+    Width = width;
+    SizeUom = size_uom;
+    Price = price;
+    PriceCurrency = price_currency;
+    Taxrate = taxrate;
+    PgNameTrans = pgname_trans;
+    TransCode = trans_code;
+    ChangeTime = change_time;
+    ChangedBy = changed_by;
+    CreationTime = creation_time;
+    CreatedBy = created_by; }
+
+}
+
+define behavior for ZAK_I_PROD_MRKT alias Market
+implementation in class zak_cl_bp_i_prod_mrkt unique
+persistent table zak_d_prod_mrkt
+draft table zak_d_prod_mrk_d
+lock dependent by _Product
+etag master ChangeTime
+{
+  update;
+  delete;
+
+  association _Product { with draft; }
+  association _Order { create (features : instance); with draft; }
+
+  field ( numbering : managed, readonly ) MrktUuid;
+  field ( readonly ) ProdUuid, IsoCode, ChangeTime, ChangedBy, CreationTime, CreatedBy;
+  field ( mandatory ) Mrktid, Startdate;
+
+  action ( features : instance ) confirm result [1] $self;
+
+  validation validate_market on save { create; field Mrktid; }
+  validation validate_start_date on save { create; field Startdate; }
+  validation validate_end_date on save { create; field Enddate; }
+  validation check_duplicates on save { create;update; field Mrktid; }
+
+  determination set_iso_code on modify { create; field Mrktid; }
+
+  mapping for zak_d_prod_mrkt
+  {
+    MrktUuid = mrkt_uuid;
+    Mrktid = mrktid;
+    ProdUuid = prod_uuid;
+    Startdate = startdate;
+    Status = status;
+    IsoCode = isocode;
+    ChangeTime = change_time;
+    ChangedBy = changed_by;
+    CreationTime = creation_time;
+    CreatedBy = created_by;
+  }
+}
+
+define behavior for ZAK_I_MRKT_ORDER alias Order
+implementation in class zak_cl_bp_i_mrkt_order unique
+persistent table zak_d_mrkt_order
+draft table zak_d_mrkt_ord_d
+lock dependent by _Product
+etag master ChangeTime
+{
+  update;
+  delete;
+
+  association _Product { with draft; }
+  association _Market { with draft; }
+
+  field ( numbering : managed, readonly ) OrderUuid;
+  field ( readonly ) ProdUuid, MrktUuid, Status, ChangeTime, ChangedBy, CreationTime, CreatedBy;
+  field ( mandatory ) Quantity, DeliveryDate;
+
+  validation validate_delivery_date on save { create; field DeliveryDate; }
+  validation validate_business_partner on save { create; field BussPartner; }
+
+  determination calculate_order_id on modify { create; }
+  determination set_calendar_year on modify { create; field DeliveryDate; }
+  determination calculate_amount on modify { create; field Quantity; }
+  determination set_busspartner_fields on modify { create; field BussPartner; }
+
+  mapping for zak_d_mrkt_order
+  {
+    ProdUuid = prod_uuid;
+    MrktUuid = mrkt_uuid;
+    OrderUuid = order_uuid;
+    Orderid = orderid;
+    Quantity = quantity;
+    Amountcurr = amountcurr;
+    CalendarYear = calendar_year;
+    DeliveryDate = delivery_date;
+    Grossamount = grossamount;
+    Netamount = netamount;
+    BussPartner = busspartner;
+    BussPartnerName = busspartnername;
+    BussPartnerGroup = busspartnergroup;
+    ChangeTime = change_time;
+    ChangedBy = changed_by;
+    CreationTime = creation_time;
+    CreatedBy = created_by;
+   }
+}

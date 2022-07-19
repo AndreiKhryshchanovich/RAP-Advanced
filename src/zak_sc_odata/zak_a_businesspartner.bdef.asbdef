@@ -1,0 +1,6 @@
+ implementation abstract;
+ define behavior for ZAK_A_BUSINESSPARTNER
+  {
+  create;
+ update;
+ }

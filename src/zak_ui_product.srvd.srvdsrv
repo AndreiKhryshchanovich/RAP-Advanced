@@ -1,0 +1,12 @@
+@EndUserText.label: 'Service definition for Product'
+define service ZAK_UI_PRODUCT {
+  expose ZAK_C_PRODUCT as Product;
+  expose ZAK_C_PROD_MRKT as Market;
+  expose ZAK_C_MRKT_ORDER as MrktOrder;
+  expose ZAK_C_MRKT_ORDER_CHART as OrderChart;
+  expose ZAK_I_PG as ProductGroup;
+  expose ZAK_I_PHASE as Phase;
+  expose ZAK_I_MARKET as Country;
+  expose ZAK_I_UOM as UOM;
+  expose ZAK_I_CURRENCY as Currency;
+}

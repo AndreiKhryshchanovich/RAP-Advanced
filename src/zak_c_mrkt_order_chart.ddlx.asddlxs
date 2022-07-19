@@ -1,0 +1,108 @@
+@Metadata.layer: #CORE
+@UI: {
+    headerInfo:           {
+                            typeName:       'Order',
+                            title: { label: 'Order' } },
+    presentationVariant: [{ sortOrder:      [{ by: 'DeliveryDate' }] }],
+    chart:               [{ qualifier: 'ChartQuantity',
+                            chartType: #BULLET,
+                            dimensions: [ 'DeliveryDate'],
+                            measures: [ 'Quantity'],
+                            measureAttributes: [ {measure: 'Quantity', role: #AXIS_1} ],
+                            dimensionAttributes: [ {dimension: 'DeliveryDate', role: #SERIES} ],
+                            description: 'Chart shows quantity by delivery date.' },
+                          { qualifier: 'ChartAmount',
+                            chartType: #BAR_DUAL,
+                            dimensions: [ 'DeliveryDate'],
+                            measures: [ 'Grossamount', 'Netamount' ],
+                            measureAttributes: [ {measure: 'Netamount', role: #AXIS_1},
+                                                 {measure: 'Grossamount', role: #AXIS_2} ],
+                            dimensionAttributes: [ {dimension: 'DeliveryDate', role: #SERIES} ],
+                            description: 'Chart shows net and gross amount by delivery date.' } ]
+     }
+annotate view ZAK_C_MRKT_ORDER_CHART with
+{
+  @UI.facet: [ { id:            'OrderHeaderGross',
+           purpose:         #HEADER,
+           type:            #DATAPOINT_REFERENCE,
+           position:        10,
+           targetQualifier: 'GrossAmount' },
+         { id:              'OrderHeaderNet',
+           purpose:         #HEADER,
+           type:            #DATAPOINT_REFERENCE,
+           position:        20,
+           targetQualifier: 'NetAmount' },
+         { id:              'OrderHeaderOrderId',
+           purpose:         #HEADER,
+           type:            #DATAPOINT_REFERENCE,
+           position:        30,
+           targetQualifier: 'OrderId' },
+         { id:              'GeneralInfo',
+           label:           'General Information',
+           type:            #COLLECTION,
+           position:        10 },
+         { id:              'AdminData',
+           label:           'Admin Data',
+           type:            #COLLECTION,
+           position:        20 },
+         { id:              'BasicGroup',
+           label:           'Basic Data',
+           purpose:         #STANDARD,
+           type:            #FIELDGROUP_REFERENCE,
+           parentId:        'GeneralInfo',
+           position:        10,
+           targetQualifier: 'BasicGroup'},
+         { id:              'CreateGroup',
+           label:           'Create Info',
+           purpose:         #STANDARD,
+           type:            #FIELDGROUP_REFERENCE,
+           parentId:        'AdminData',
+           position:        10,
+           targetQualifier: 'CreateGroup' },
+         { id:              'ChangeGroup',
+           label:           'Change Info',
+           purpose:         #STANDARD,
+           type:            #FIELDGROUP_REFERENCE,
+           parentId:        'AdminData',
+           position:        20,
+           targetQualifier: 'ChangeGroup' }
+        ]
+
+  @UI.hidden: true
+  ProdUuid;
+  @UI.hidden: true
+  MrktUuid;
+  @UI.hidden: true
+  OrderUuid;
+  @UI: { lineItem:       [{ position: 10 }],
+         fieldGroup:     [{ position: 10, qualifier: 'BasicGroup' }],
+         dataPoint:       { qualifier: 'OrderId', title: 'Order ID' } }
+  Orderid;
+  @UI: { lineItem:       [{ position: 20 }],
+         fieldGroup:     [{ position: 20, qualifier: 'BasicGroup' }] }
+  CalendarYear;
+  @UI: { lineItem:       [{ position: 30 }],
+         fieldGroup:     [{ position: 30, qualifier: 'BasicGroup' }] }
+  DeliveryDate;
+  @UI: { lineItem:       [{ position: 40 }],
+         fieldGroup:     [{ position: 40, qualifier: 'BasicGroup' }] }
+  Quantity;
+  @UI: { lineItem:       [{ position: 50 }],
+         dataPoint:       { qualifier: 'GrossAmount', title: 'Gross Amount' } }
+  Grossamount;
+  @UI: { lineItem:       [{ position: 60 }],
+         dataPoint:       { qualifier: 'NetAmount', title: 'Net Amount' } }
+  Netamount;
+  @Consumption.valueHelpDefinition: [{entity: {name: 'ZAK_I_Currency', element: 'Currency' }}]
+  Amountcurr;
+  @UI: { fieldGroup:     [{ position: 10, qualifier: 'CreateGroup' }] }
+  CreatedBy;
+  @UI: { fieldGroup:     [{ position: 20, qualifier: 'CreateGroup' }] }
+  CreationTime;
+  @UI: { fieldGroup:     [{ position: 10, qualifier: 'ChangeGroup' }] }
+  ChangedBy;
+  @UI: { fieldGroup:     [{ position: 20, qualifier: 'ChangeGroup' }] }
+  ChangeTime;
+
+
+}
